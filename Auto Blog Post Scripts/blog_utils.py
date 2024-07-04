@@ -1,20 +1,13 @@
 from pathlib import Path
 import shutil
 import os
-
 from bs4 import BeautifulSoup as Soup
 from git import Repo
 
-# blog utils = defines git push func, creating blog func, duplicate check, index writing
-
-
-
+#blog utils summary = defines git push func, creating blog func, duplicate check, index writing
 
 #cover_image - how is it linked to img_filename?
 
-#CHECKED
-
-#only diff is cover_image is not a path at top
 def create_new_blog(path_to_content, title, content, cover_image):
     #converts the img_filename into a path instead of a string
     cover_image = Path(cover_image)
@@ -71,10 +64,9 @@ def write_to_index(path_to_blog, path_to_new_content):
     last_link.insert_after(link_to_new_blog)
 
     with open(path_to_blog/'index.html','w') as f:
-        f.write(str(soup.prettify(formatter='html'))) #prettify with separate long string into new lines
+        f.write(str(soup.prettify(formatter='html'))) #prettify will separate long string into new lines
 
-
-def update_blog(path_to_blog_repo, commit_message='Updates blog - fixed module py files'):
+def update_blog(path_to_blog_repo, commit_message='Updates blog - rewrote code and gpt call to work in py modules'):
     #tells GitPython the Repo Location
     repo = Repo(path_to_blog_repo)
     #git add . (everything)
@@ -83,5 +75,5 @@ def update_blog(path_to_blog_repo, commit_message='Updates blog - fixed module p
     repo.index.commit(commit_message)
     #git push
     origin = repo.remote(name='origin')
-    print('push')
-    #origin.push()
+    print('successful push to github')
+    origin.push()

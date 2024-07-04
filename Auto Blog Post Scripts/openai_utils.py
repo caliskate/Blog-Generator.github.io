@@ -1,52 +1,17 @@
-from ast import main
-import shutil
-import os
-import requests
-import openai
-from openai import OpenAI
-from datetime import datetime as dt
-from PIL import Image 
-
 from getpass import getpass
-
-
-import openai #aiutils
-from openai import OpenAI #aiutils
 import os #aiutils
-from git import Repo #blog utils
-#used for setting up paths and parent dir to github repository
-from pathlib import Path #main and blogutil
 import shutil
-from bs4 import BeautifulSoup as Soup #blogutils
-from PIL import Image #aiutils
-from datetime import datetime as dt #aiutils -  for formatting date returned with images
 import requests #aiutils - for downloading images from URLs
+from openai import OpenAI
 
-#openai utils = login,api calls, text, title and image saving
-#something in this is causing none type error on glob utils
-
+#openai utils summary = login,api calls, text, title and image saving
 
 #user login
 inputuser=input('enter your OpenAI username: ')
 os.environ["OPENAI_API_KEY"] = getpass('Paste your OpenAI API key and press enter (no text will show) : ')
 
-
-
 #gpt api call
 client = OpenAI()
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #gpt prompt creation
 def create_prompt(title):
@@ -61,14 +26,7 @@ def create_prompt(title):
  Full text: """.format(title) #070224 added 'Do not exceed 2 paragraphs.' based on max token length of 250
     return prompt
 
-
-
-
-
-
-
-
-#this messages gpt api call format and gpt model was updated, code from notebook did not work in py modules
+#messages gpt api call format and gpt model was updated, code from notebook caused nonetype error in py modules
 def system_prompt():
     return "You are a helpful assistant to write blogposts."
 
@@ -86,32 +44,10 @@ def get_blog_from_openai(blog_title):
 
     return response.choices[0].message.content
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #image title
 def dalle3_prompt(title):
     prompt=f"Sci-fi art showing a movie scene with '{title}'. Extremely detailed and mesmerizing."
     return prompt #added extremely detailed and mesmerizing 070224
-
-
-
-
-
-
-
 
 def save_image(image_url, file_name):
     image_res = requests.get(image_url, stream = True)
@@ -122,8 +58,6 @@ def save_image(image_url, file_name):
     else:
         print("Error downloading image!")
     return image_res.status_code, file_name
-
-
 
 #dalle image api call - ok
 def get_cover_image(title, save_path):
@@ -138,11 +72,3 @@ def get_cover_image(title, save_path):
     image_url = images_response.data[0].url
     status_code, file_name = save_image(image_url, save_path)
     return status_code, file_name
-
-
-
-
-
-
-
-
