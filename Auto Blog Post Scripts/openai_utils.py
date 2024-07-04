@@ -1,3 +1,4 @@
+from ast import main
 import shutil
 import os
 import requests
@@ -6,9 +7,26 @@ from openai import OpenAI
 from datetime import datetime as dt
 from PIL import Image 
 
+from getpass import getpass
+
+
+import openai #aiutils
+from openai import OpenAI #aiutils
+import os #aiutils
+from git import Repo #blog utils
+#used for setting up paths and parent dir to github repository
+from pathlib import Path #main and blogutil
+import shutil
+from bs4 import BeautifulSoup as Soup #blogutils
+from PIL import Image #aiutils
+from datetime import datetime as dt #aiutils -  for formatting date returned with images
+import requests #aiutils - for downloading images from URLs
+
 #user login
 inputuser=input('enter your OpenAI username: ')
-os.environ["OPENAI_API_KEY"] = getpass('enter your OpenAI API key: ')
+os.environ["OPENAI_API_KEY"] = getpass('Paste your OpenAI API key and press enter (no text will show) : ')
+
+
 
 #gpt prompt creation
 def create_prompt(title):
@@ -26,9 +44,10 @@ Full text: """.format(title) #070224 added 'Do not exceed 2 paragraphs.' based o
 #gpt api call
 client = OpenAI()
 
-completion=client.completions.create(
+def get_blog_from_openai(blog_title):
+    completion=client.completions.create(
                 model='gpt-3.5-turbo-instruct',
-                prompt=create_prompt(title),
+                prompt=create_prompt(blog_title),
                 max_tokens=250, #length of output
                 temperature=0.7, # 0 to 1, only change top p or temperature , 0 is the most probable, 1 takes more risks
                 top_p = 1.0, #only change top p or temperature, 1 is default, 0.1 is top 10% most probable
@@ -37,42 +56,45 @@ completion=client.completions.create(
                 n = 1, #number or results to be rewturned, 1 is default, use when temp is zero to min repeating results
                 # stop = ['/n'],
 )         
-blog_content=completion.choices[0].text
-print(blog_content)
-
+    blog_content=completion.choices[0].text
+    print(blog_content)
+client = OpenAI()  # will use environment variable "OPENAI_API_KEY"
 #image title
 def dalle3_prompt(title):
     prompt=f"Sci-fi art showing a movie scene with {title}, extremely detailed and mesmerizing."
     return prompt #added extremely detailed and mesmerizing 070224
-image_prompt=dalle3_prompt(title)
 
 #naming and saving image
 dname = dt.now().strftime('%m-%d-%Y %H:%M:%S').replace("-",'').replace(":",'').replace(' ','-')
 img_filename = 'BLOG-image_' + dname +'.png'
 
-#grabs the url from the model_dump and adds it to empty list
-image_url_list=[]
-for item in images_response.data:
-    image_url_list.append(item.model_dump()["url"])
+#downloading image from url and check status 200
+def save_image(image_url, img_filename):
+    image_res = requests.get(image_url, stream = True)
     
-#grabs string from the list
-image_url=item.model_dump()["url"]
+    if image_res.status_code == 200:
+        with open(img_filename,'wb') as f:
+            shutil.copyfileobj(image_res.raw, f)
+    else:
+        print("Error downloading image!")
+    return image_res.status_code, img_filename
 
-#downloading image from url
-with open(img_filename,'wb') as f:
-    shutil.copyfileobj(requests.get(image_url, stream=True).raw, f)
-print(img_filename,'downloaded')
-
-client = OpenAI()  # will use environment variable "OPENAI_API_KEY"
-
-prompt = image_prompt
 
 #dalle image api call
-image_params = {
- "model": "dall-e-3",  # Defaults to dall-e-2
- "n": 1,               # Between 2 and 10 is only for DALL-E 2
- "size": "1024x1024",  # 256x256, 512x512 only for DALL-E 2 - not much cheaper - 1024x1024, 1024x1792 or 1792x1024 available for DALL-E 3
- "prompt": prompt,     # DALL-E 3: max 4000 characters, DALL-E 2: max 1000
- "user": main.inputuser,     # pass a customer ID to OpenAI for abuse monitoring
-}
-images_response = client.images.generate(**image_params)
+def get_cover_image(title, save_path):
+    images_response = client.images.generate(
+                    model= "dall-e-3", 
+                    n= 1,               # Between 2 and 10 is only for DALL-E 2
+                    size= "1024x1024",  # 256x256, 512x512 only for DALL-E 2 - not much cheaper - 1024x1024, 1024x1792 or 1792x1024 available for DALL-E 3
+                    prompt=dalle3_prompt(title),     # DALL-E 3: max 4000 characters, DALL-E 2: max 1000
+                    user= inputuser,      # pass a customer ID to OpenAI for abuse monitoring
+                    quality="standard"
+                    )
+    image_url = images_response.data[0].url
+    status_code, file_name = save_image(image_url, save_path)
+    return status_code, img_filename
+
+
+
+
+

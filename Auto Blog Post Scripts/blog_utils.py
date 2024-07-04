@@ -1,18 +1,31 @@
 from pathlib import Path
 import shutil
 import os
+
 from bs4 import BeautifulSoup as Soup
 from git import Repo
 
-def create_new_blog(title,content,cover_image):
+from getpass import getpass #main
+import openai #aiutils
+from openai import OpenAI #aiutils
+import os #aiutils
+from git import Repo #blog utils
+#used for setting up paths and parent dir to github repository
+from pathlib import Path #main and blogutil
+import shutil
+from bs4 import BeautifulSoup as Soup #blogutils
+from PIL import Image #aiutils
+from datetime import datetime as dt #aiutils -  for formatting date returned with images
+import requests #aiutils - for downloading images from URLs
+
+def create_new_blog(path_to_content, title, content, cover_image):
     cover_image = Path(cover_image)
 
-    files = len(list(PATH_TO_CONTENT.glob("*.html")))     #grab all html files and count them
+    files = len(list(path_to_content.glob("*.html")))     #grab all html files and count them
     new_title = f"{files+1}.html" #creates file and folder name by counting up by 1
-    path_to_new_content = PATH_TO_CONTENT/new_title #getting the file and making sure in correct dir
+    path_to_new_content = path_to_content/new_title #getting the file and making sure in correct dir
     
-    shutil.copy(cover_image,PATH_TO_CONTENT) #checks to make sure file name does not exist - prevents error or overwriting existing files
-    print(new_title)
+    shutil.copy(cover_image,path_to_content) #checks to make sure file name does not exist - prevents error or overwriting existing files
     if not os.path.exists(path_to_new_content):
         #write a new html file
         with open(path_to_new_content,"w") as f:
@@ -71,4 +84,5 @@ def write_to_index(path_to_new_content):
         repo.index.commit(commit_message)
         #git push
         origin = repo.remote(name='origin')
-        origin.push()
+        print('push')
+        #origin.push()
