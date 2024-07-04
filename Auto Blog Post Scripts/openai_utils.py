@@ -51,14 +51,14 @@ client = OpenAI()
 #gpt prompt creation
 def create_prompt(title):
     prompt="""
-Biography:
-My name is Darin and I am a Python student.
+ Biography:
+ My name is Darin and I am a Python student.
 
-Blog
-Title: Python and the Future of AI
-tags: tech, python, coding, AI, machine learning
-Summary: I learn about what Python can hold for the future of AI. Please do not exceed 2 paragraphs in total response length.
-Full text: """.format(title) #070224 added 'Do not exceed 2 paragraphs.' based on max token length of 250
+ Blog
+ Title: Python and the Future of AI
+ tags: tech, python, coding, AI, machine learning
+ Summary: I learn about what Python can hold for the future of AI. Please do not exceed 2 paragraphs in total response length.
+ Full text: """.format(title) #070224 added 'Do not exceed 2 paragraphs.' based on max token length of 250
     return prompt
 
 
@@ -77,6 +77,16 @@ def get_blog_from_openai(blog_title):
 )
 
     return response.choices[0].message.content
+
+
+
+
+
+
+
+
+
+
 
 
 
