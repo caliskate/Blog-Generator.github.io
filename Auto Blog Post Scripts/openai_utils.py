@@ -62,6 +62,13 @@ def create_prompt(title):
     return prompt
 
 
+
+
+
+
+
+
+#this messages gpt api call format and gpt model was updated, code from notebook did not work in py modules
 def system_prompt():
     return "You are a helpful assistant to write blogposts."
 
@@ -73,10 +80,12 @@ def get_blog_from_openai(blog_title):
                                   "content": system_prompt()},
                                 {"role": "user", "content": create_prompt(blog_title)},
                             ],
-                                temperature=0.7
+                                temperature=0.7,
+                                max_tokens=250
 )
 
     return response.choices[0].message.content
+
 
 
 

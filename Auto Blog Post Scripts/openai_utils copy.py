@@ -80,6 +80,17 @@ def get_blog_from_openai(blog_title):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 #image title
 def dalle3_prompt(title):
     prompt=f"Sci-fi art showing a movie scene with '{title}'. Extremely detailed and mesmerizing."

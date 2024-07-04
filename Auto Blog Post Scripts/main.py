@@ -47,7 +47,6 @@ PATH_TO_CONTENT = PATH_TO_BLOG/"content"
 #creates content folder
 PATH_TO_CONTENT.mkdir(exist_ok=True,parents=True)
 
-
 #2 - Define your title and get blog text
 title = "Python and the Future of AI"
 print(openai_utils.create_prompt(title))
