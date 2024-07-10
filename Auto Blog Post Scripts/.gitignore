@@ -1,4 +1,0 @@
-#database and api keys
-.env
-#redundant ipynb files
-**/.ipynb_checkpoints
