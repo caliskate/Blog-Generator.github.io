@@ -1,4 +1,4 @@
 #database and api keys
-.env
+*.env
 #redundant ipynb files - moved to repo folder
 **.ipynb_checkpoints/
